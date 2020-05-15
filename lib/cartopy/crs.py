@@ -1947,18 +1947,30 @@ class Robinson(_WarpedRectangularProjection):
 
 
 class InterruptedGoodeHomolosine(Projection):
-    def __init__(self, central_longitude=0, globe=None):
-        proj4_params = [('proj', 'igh'), ('lon_0', central_longitude)]
-        super(InterruptedGoodeHomolosine, self).__init__(proj4_params,
-                                                         globe=globe)
+    def __init__(self, central_longitude=0, globe=None, emphasis='land'):
+        if emphasis == 'land':
+            proj4_params = [('proj', 'igh'), ('lon_0', central_longitude)]
+            super(InterruptedGoodeHomolosine, self).__init__(proj4_params,
+                                                             globe=globe)
+        elif emphasis == 'ocean':
+            proj4_params = [('proj', 'igh_o'), ('lon_0', central_longitude)]
+            super(InterruptedGoodeHomolosine, self).__init__(proj4_params,
+                                                             globe=globe)
+        else:
+            msg = '`emphasis` needs to be either \'land\' or \'ocean\''
+            raise ValueError(msg)
 
         minlon, maxlon = self._determine_longitude_bounds(central_longitude)
         epsilon = 1e-10
 
         # Obtain boundary points
         n = 31
-        top_interrupted_lons = (-40.0,)
-        bottom_interrupted_lons = (80.0, -20.0, -100.0)
+        if emphasis == 'land':
+            top_interrupted_lons = (-40.0,)
+            bottom_interrupted_lons = (80.0, -20.0, -100.0)
+        elif emphasis == 'ocean':
+            top_interrupted_lons = (-110.0, 50.0)
+            bottom_interrupted_lons = (90.0, -75.0)
         lons = np.empty(
             (2 + 2 * len(top_interrupted_lons + bottom_interrupted_lons)) * n +
             1)
