@@ -12,19 +12,11 @@ plot results from source coordinates to the GeoAxes' target projection.
 
 """
 
-from __future__ import (absolute_import, division, print_function)
-
-import six
-
 import collections
 import contextlib
 import functools
 import warnings
 import weakref
-if not six.PY2:
-    import collections.abc as collections_abc
-else:
-    import collections as collections_abc
 
 import matplotlib as mpl
 import matplotlib.artist
@@ -239,8 +231,7 @@ class InterProjectionTransform(mtransforms.Transform):
 class _ViewClippedPathPatch(mpatches.PathPatch):
     def __init__(self, axes, **kwargs):
         self._original_path = mpath.Path(np.empty((0, 2)))
-        super(_ViewClippedPathPatch, self).__init__(self._original_path,
-                                                    **kwargs)
+        super().__init__(self._original_path, **kwargs)
         self._axes = axes
 
     def set_boundary(self, path, transform):
@@ -255,15 +246,14 @@ class _ViewClippedPathPatch(mpatches.PathPatch):
     @matplotlib.artist.allow_rasterization
     def draw(self, renderer, *args, **kwargs):
         self._adjust_location()
-        super(_ViewClippedPathPatch, self).draw(renderer, *args, **kwargs)
+        super().draw(renderer, *args, **kwargs)
 
 
 class GeoSpine(mspines.Spine):
     def __init__(self, axes, **kwargs):
         self._original_path = mpath.Path(np.empty((0, 2)))
         kwargs.setdefault('clip_on', False)
-        super(GeoSpine, self).__init__(axes, 'geo', self._original_path,
-                                       **kwargs)
+        super().__init__(axes, 'geo', self._original_path, **kwargs)
         self.set_capstyle('butt')
 
     def set_boundary(self, path, transform):
@@ -279,12 +269,12 @@ class GeoSpine(mspines.Spine):
         # make sure the location is updated so that transforms etc are
         # correct:
         self._adjust_location()
-        return super(GeoSpine, self).get_window_extent(renderer=renderer)
+        return super().get_window_extent(renderer=renderer)
 
     @matplotlib.artist.allow_rasterization
     def draw(self, renderer):
         self._adjust_location()
-        ret = super(GeoSpine, self).draw(renderer)
+        ret = super().draw(renderer)
         self.stale = False
         return ret
 
@@ -352,7 +342,7 @@ class GeoAxes(matplotlib.axes.Axes):
         self.projection = kwargs.pop('map_projection')
         """The :class:`cartopy.crs.Projection` of this GeoAxes."""
 
-        super(GeoAxes, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._gridliners = []
         self.img_factories = []
         self._done_img_factory = False
@@ -410,7 +400,7 @@ class GeoAxes(matplotlib.axes.Axes):
             # Args and kwargs not allowed.
             assert not bool(args) and not bool(kwargs)
             image = factory
-            super(GeoAxes, self).add_image(image)
+            super().add_image(image)
             return image
 
     @contextlib.contextmanager
@@ -909,7 +899,7 @@ class GeoAxes(matplotlib.axes.Axes):
         # Switch on drawing of x axis
         self.xaxis.set_visible(True)
 
-        return super(GeoAxes, self).set_xticks(xticks, minor=minor)
+        return super().set_xticks(xticks, minor=minor)
 
     def set_yticks(self, ticks, minor=False, crs=None):
         """
@@ -956,7 +946,7 @@ class GeoAxes(matplotlib.axes.Axes):
         # Switch on drawing of y axis
         self.yaxis.set_visible(True)
 
-        return super(GeoAxes, self).set_yticks(yticks, minor=minor)
+        return super().set_yticks(yticks, minor=minor)
 
     def stock_img(self, name='ne_shaded'):
         """
@@ -1129,7 +1119,7 @@ class GeoAxes(matplotlib.axes.Axes):
                                  'raster', 'natural_earth')
         json_file = os.path.join(bgdir, 'images.json')
 
-        with open(json_file, 'r') as js_obj:
+        with open(json_file) as js_obj:
             dict_in = json.load(js_obj)
         for img_type in dict_in:
             _USER_BG_IMGS[img_type] = dict_in[img_type]
@@ -1190,7 +1180,7 @@ class GeoAxes(matplotlib.axes.Axes):
         plotting methods.
 
         """
-        if not isinstance(regrid_shape, collections_abc.Sequence):
+        if not isinstance(regrid_shape, collections.abc.Sequence):
             target_size = int(regrid_shape)
             x_range, y_range = np.diff(target_extent)[::2]
             desired_aspect = x_range / y_range
