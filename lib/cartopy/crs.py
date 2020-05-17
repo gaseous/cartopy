@@ -1969,8 +1969,8 @@ class InterruptedGoodeHomolosine(Projection):
             top_interrupted_lons = (-40.0,)
             bottom_interrupted_lons = (80.0, -20.0, -100.0)
         elif emphasis == 'ocean':
-            top_interrupted_lons = (-110.0, 50.0)
-            bottom_interrupted_lons = (90.0, -75.0)
+            top_interrupted_lons = (-90.0, 60.0)
+            bottom_interrupted_lons = (90.0, -60.0)
         lons = np.empty(
             (2 + 2 * len(top_interrupted_lons + bottom_interrupted_lons)) * n +
             1)
