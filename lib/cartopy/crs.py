@@ -1887,8 +1887,8 @@ class Robinson(_WarpedRectangularProjection):
 
     def transform_points(self, src_crs, x, y, z=None):
         """
-        Capture and handle NaNs and infs in input points -- 
-        else as parent function,
+        Capture and handle NaNs and infs in input points else as
+        parent function
         :meth:`_WarpedRectangularProjection.transform_points`.
 
         Needed because input NaNs can trigger a fatal error in the underlying
@@ -1901,7 +1901,8 @@ class Robinson(_WarpedRectangularProjection):
             Instead, we invalidate any of the points that contain a NaN.
 
         """
-        input_point_nans = np.isnan(x) | np.isnan(y) | np.isinf(x) | np.isinf(y)
+        input_point_nans = np.isnan(x) | np.isnan(y) | \
+                           np.isinf(x) | np.isinf(y)
         if z is not None:
             input_point_nans |= np.isnan(z)
         handle_nans = np.any(input_point_nans)
