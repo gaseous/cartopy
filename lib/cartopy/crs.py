@@ -1902,7 +1902,7 @@ class Robinson(_WarpedRectangularProjection):
 
         """
         input_point_nans = np.isnan(x) | np.isnan(y) | \
-            np.isinf(x) | np.isinf(y)
+                           np.isinf(x) | np.isinf(y)
         if z is not None:
             input_point_nans |= np.isnan(z)
         handle_nans = np.any(input_point_nans)
